@@ -152,22 +152,57 @@ export async function ingresarPanelAdmin(page){
 }
 
 export async function ingresarPanelAdminOpciones(page, tipo){
-  await page.getByRole('button', { name: 'LISTAR PRODUCTOS' }).click();
-  await expect(page.getByRole('cell', { name: 'ID', exact: true })).toBeVisible();
-  await expect(page.getByRole('cell', { name: 'NOMBRE' })).toBeVisible();
-  await expect(page.getByRole('cell', { name: 'CATEGORÍA' })).toBeVisible();
-  await expect(page.getByRole('cell', { name: 'ACCIONES' })).toBeVisible();
+  await page.getByRole('button', { name: tipo }).click();
+  switch (tipo) {
+    case 'LISTAR PRODUCTOS':
+      await expect(page.getByRole('cell', { name: 'ID', exact: true })).toBeVisible();
+      await expect(page.getByRole('cell', { name: 'NOMBRE' })).toBeVisible();
+      await expect(page.getByRole('cell', { name: 'CATEGORÍA' })).toBeVisible();
+      await expect(page.getByRole('cell', { name: 'ACCIONES' })).toBeVisible();
+      // await page.waitForTimeout(5000);
+      await page.waitForSelector('table tbody tr');
+  
+      const tabla = page.locator('table');
+      await expect(tabla).toBeVisible();
+  
+      // Localiza todas las filas dentro del <tbody>
+      const filas = tabla.locator('tbody tr');
+  
+      // Verifica que hay al menos una fila
+      const numeroDeFilas = await filas.count();
+      console.log(numeroDeFilas);
+      expect(numeroDeFilas).toBeGreaterThan(0); // Asegúrate de que hay filas en la tabla
+  
+      break;
+  
+    case 'AGREGAR PRODUCTO':
+      // Valida que los campos y botones sean visibles
+      await expect(page.getByRole('button', { name: 'Volver' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Agregar Producto' })).toBeVisible();
+      await expect(page.getByText('Nombre *')).toBeVisible();
+      await expect(page.locator('div').filter({ hasText: /^Nombre \*$/ }).getByRole('textbox')).toBeVisible();
+      await expect(page.getByText('Descripción *')).toBeVisible();
+      await expect(page.locator('textarea')).toBeVisible();
+      await expect(page.getByText('Precio *')).toBeVisible();
+      await expect(page.locator('div').filter({ hasText: /^Precio \*$/ }).getByRole('spinbutton')).toBeVisible();
+      await expect(page.getByText('Inventario *')).toBeVisible();
+      await expect(page.locator('div').filter({ hasText: /^Inventario \*$/ }).getByRole('spinbutton')).toBeVisible();
+      await expect(page.getByText('Categoría *')).toBeVisible();
+      await expect(page.locator('div').filter({ hasText: /^Categoría \*SeleccionarVAJILLACUBIERTOSCRISTALERIA$/ }).getByRole('combobox')).toBeVisible();
+      await expect(page.getByText('Temática *')).toBeVisible();
+      await expect(page.locator('div').filter({ hasText: /^Temática \*SeleccionarHALLOWEENNAVIDADACCION DE GRACIASPASCUA$/ }).getByRole('combobox')).toBeVisible();
+      await expect(page.getByText('Imágenes *')).toBeVisible();
+      await expect(page.locator('input[type="file"]')).toBeVisible();
+      await expect(page.getByText('Características')).toBeVisible();
+      await expect(page.getByPlaceholder('Separar con comas (ej: 1, 2,')).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Registrar Producto' })).toBeVisible();
+  
 
-  const tabla = page.locator('table');
-  await expect(tabla).toBeVisible();
 
-  // Localiza todas las filas dentro del <tbody>
-  const filas = tabla.locator('tbody tr');
 
-  // Verifica que hay al menos una fila
-  const numeroDeFilas = await filas.count();
-  expect(numeroDeFilas).toBeGreaterThan(0); // Asegúrate de que hay filas en la tabla
 
+      break;
+  }
 }
 
 

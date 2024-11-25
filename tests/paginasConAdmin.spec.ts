@@ -18,6 +18,10 @@ test.describe('Validación de rutas protegidas', () => {
       await ingresarPanelAdminOpciones(page, 'LISTAR PRODUCTOS');
     });
 
+    test('AGREGAR PRODUCTO', async ({page}) => {
+      await ingresarPanelAdminOpciones(page, 'AGREGAR PRODUCTO');
+    });
+
     test('Agregar producto (/admin/agregarProducto)', async ({ page }) => {
       await page.goto(`${baseUrl}/admin/agregarProducto`);
       // await expect(page.locator('form#agregarProductoForm')).toBeVisible();
