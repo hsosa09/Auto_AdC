@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 import { baseUrl, variables_userAdmin } from '../variables/variables';
-import {realizarLogin, ingresarPanelAdmin, ingresarPanelAdminOpciones} from '../variables/testRepetidosAInvocar'
+import {realizarLogin, ingresarPanelAdmin, ingresarPanelAdminOpcionesListarProductos, ingresarPanelAdminOpcionesAgregarProductos} from '../variables/testRepetidosAInvocar'
 
 test.describe('Validación de rutas protegidas', () => {
     test.beforeEach(async ({ page }) => {
@@ -14,17 +14,12 @@ test.describe('Validación de rutas protegidas', () => {
 
     });
   
-    test('LISTAR PRODUCTOS', async ({page}) => {
-      await ingresarPanelAdminOpciones(page, 'LISTAR PRODUCTOS');
+    test('Ingresar a Listar Producto', async ({ page }) => {
+      await ingresarPanelAdminOpcionesListarProductos(page, 'LISTAR PRODUCTOS');
     });
 
-    test('AGREGAR PRODUCTO', async ({page}) => {
-      await ingresarPanelAdminOpciones(page, 'AGREGAR PRODUCTO');
-    });
-
-    test('Agregar producto (/admin/agregarProducto)', async ({ page }) => {
-      await page.goto(`${baseUrl}/admin/agregarProducto`);
-      // await expect(page.locator('form#agregarProductoForm')).toBeVisible();
+    test("Ingresar a Agregar Producto", async ({ page }) => {
+      await ingresarPanelAdminOpcionesAgregarProductos(page, 'AGREGAR PRODUCTO');
     });
   
     test('Administrar categorías (/admin/administrar-categorias)', async ({ page }) => {

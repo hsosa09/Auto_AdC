@@ -26,7 +26,7 @@ test.describe('Validación de rutas públicas sin loguear', () => {
   });
 
   test('No logueado - Página de inicio de sesión Loguearse (/login)', async ({ page }) => {
-    await realizarLogin(page, variables_registro.email, variables_registro.password)
+    await realizarLogin(page, variables_registro_existente.email, variables_registro_existente.password)
   });
 
   // Catalogo
