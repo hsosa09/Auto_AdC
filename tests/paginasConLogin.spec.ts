@@ -1,9 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { variables_registro } from '../variables/variables';
-import {inicio, productosNavbar, sitioWip, ingresarLogin, ingresarRegistro, realizarRegistro, productosNavbarPremiumSet} from '../variables/testRepetidosAInvocar';
+import {inicio, productosNavbar, productosNavbarPremiumSet, realizarLogin} from '../variables/testRepetidosAInvocar';
 
 // Validación de rutas públicas estando logueado
 test.describe('Validación de rutas públicas estando logueado', () => {
+  test.beforeEach(async ({ page }) => {
+    await realizarLogin(page, variables_registro.email, variables_registro.password)
+  });
   test('No logueado - Página de inicio (/)', async ({ page }) => {
     await inicio(page);
   });

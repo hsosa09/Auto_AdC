@@ -1,18 +1,23 @@
 const { test, expect } = require('@playwright/test');
 import { baseUrl, variables_userAdmin } from '../variables/variables';
-import {loginAdminDatosCorrectos} from '../variables/testRepetidosAInvocar'
+import {realizarLogin, ingresarPanelAdmin, ingresarPanelAdminOpciones} from '../variables/testRepetidosAInvocar'
 
 test.describe('Validación de rutas protegidas', () => {
     test.beforeEach(async ({ page }) => {
       // Realiza login antes de cada prueba
-      await loginAdminDatosCorrectos(page, variables_userAdmin.emailAdmin, variables_userAdmin.passwordAdmin);
+      await realizarLogin(page, variables_userAdmin.email, variables_userAdmin.password)
+      await ingresarPanelAdmin(page)
     });
   
     test('Panel de administración (/admin)', async ({ page }) => {
-      await page.goto(`${baseUrl}/admin`);
-      // await expect(page.locator('h1')).toContainText('Administrador');
+      await expect(page.url()).toBe(`${baseUrl}/admin`);
+
     });
   
+    test('LISTAR PRODUCTOS', async ({page}) => {
+      await ingresarPanelAdminOpciones(page, 'LISTAR PRODUCTOS');
+    });
+
     test('Agregar producto (/admin/agregarProducto)', async ({ page }) => {
       await page.goto(`${baseUrl}/admin/agregarProducto`);
       // await expect(page.locator('form#agregarProductoForm')).toBeVisible();

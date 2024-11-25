@@ -22,7 +22,7 @@ export async function inicio(page) {
 
 };
 
-// Ingresar a Catalogo
+// Ingresar a Catalogo o lleva a wip
 export async function productosNavbar(page, tipo, opcion) {
   try {
   await inicio(page);
@@ -36,6 +36,7 @@ export async function productosNavbar(page, tipo, opcion) {
   }
 };
 
+// Ingresa a Premium Set o lleva a wip
 export async function productosNavbarPremiumSet(page, tipo) {
   try {
   await inicio(page);
@@ -47,6 +48,7 @@ export async function productosNavbarPremiumSet(page, tipo) {
   }
 };
 
+// Lleva a sitio wip y muestra imagen de mantenimiento en local u online
 export async function sitioWip(page){
   try {
     await expect(page.locator('img[alt="mantenimiento"]')).toHaveAttribute('src', '/assets/sitioenmantenimiento-DhxBcCgZ.jpg');
@@ -64,7 +66,7 @@ export async function ingresarLogin(page){
   await expect(page.locator('#root')).toContainText('Iniciar Sesión');
 }
 
-async function realizarLogin(page, email, password) {
+export async function realizarLogin(page, email, password) {
   await ingresarLogin(page);
   await expect(page.getByLabel('Email *')).toBeVisible();
   await page.getByLabel('Email *').click();
@@ -76,9 +78,21 @@ async function realizarLogin(page, email, password) {
   await expect(page.getByRole('button', { name: 'Ingresar' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Registrarse' })).toBeVisible();
   await page.getByRole('button', { name: 'Ingresar' }).click();
-  await page.getByRole('button', { name: 'OK' }).click(); 
-  await expect(page.toHaveAttribute.link('/'));
+  try {
+    await expect(page.getByText('¡Login exitoso!')).toBeVisible();
+    await expect(page.getByText('Bienvenido de nuevo')).toBeVisible();
+    await page.getByRole('button', { name: 'OK' }).click(); 
+    await expect(page.url()).toBe(`${baseUrl}/`);
+  } catch (error) {
+    await expect(page.getByText('Usuario no creado')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
+    await page.getByRole('button', { name: 'OK' }).click();
+  }
+  
+  
 }
+
+
 
 
 // Función para realizar el registro
@@ -98,8 +112,8 @@ export async function ingresarRegistro(page){
   await expect(page.getByRole('button', { name: 'Cancelar' })).toBeVisible();
 }
 
-
-export async function realizarRegistro(page, nombre, apellido, email, password) {
+// Registrarse
+export async function realizarRegistro(page, nombre, apellido, email, password, esNuevo) {
   await ingresarRegistro(page);
   await page.getByPlaceholder('Nombre').click();
   await page.getByPlaceholder('Nombre').fill(nombre);
@@ -110,18 +124,52 @@ export async function realizarRegistro(page, nombre, apellido, email, password) 
   await page.getByPlaceholder('Contraseña').click();
   await page.getByPlaceholder('Contraseña').fill(password);
   await page.getByRole('button', { name: 'Registrarse' }).click();
-  try {
+  if (esNuevo) {
     await expect(page.getByText('Usuario creado')).toBeVisible();
     await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
     await page.getByRole('button', { name: 'OK' }).click();
-  } catch (error) {
+  } else {
     await expect(page.getByText('Usuario no creado')).toBeVisible();
     await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
     await page.getByRole('button', { name: 'OK' }).click();
   }
+}
 
 
 
-  
+// Ingresar a panel admin
+export async function ingresarPanelAdmin(page){
+  await page.goto(baseUrl);
+  await expect(page.getByText('Tus recuerdos en porcelana')).toBeVisible();
+  await page.getByRole('banner').getByRole('button').nth(4).click();
+  await page.getByRole('link', { name: 'Panel Admin' }).click();
+  await expect(page.locator('#root')).toContainText('Panel de Administración');
+  await expect(page.getByRole('button', { name: 'LISTAR PRODUCTOS' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'AGREGAR PRODUCTO' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'ADMINISTRAR CARACTERISTICAS' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'ADMINISTRAR USUARIOS' })).toBeVisible();
 
 }
+
+export async function ingresarPanelAdminOpciones(page, tipo){
+  await page.getByRole('button', { name: 'LISTAR PRODUCTOS' }).click();
+  await expect(page.getByRole('cell', { name: 'ID', exact: true })).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'NOMBRE' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'CATEGORÍA' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'ACCIONES' })).toBeVisible();
+
+  const tabla = page.locator('table');
+  await expect(tabla).toBeVisible();
+
+  // Localiza todas las filas dentro del <tbody>
+  const filas = tabla.locator('tbody tr');
+
+  // Verifica que hay al menos una fila
+  const numeroDeFilas = await filas.count();
+  expect(numeroDeFilas).toBeGreaterThan(0); // Asegúrate de que hay filas en la tabla
+
+}
+
+
+
+

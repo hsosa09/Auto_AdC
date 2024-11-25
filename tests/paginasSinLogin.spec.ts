@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { variables_registro } from '../variables/variables';
-import {inicio, productosNavbar, sitioWip, ingresarLogin, ingresarRegistro, realizarRegistro} from '../variables/testRepetidosAInvocar';
+import { variables_registro_existente, variables_registro_nuevo } from '../variables/variables';
+import {inicio, productosNavbar, ingresarLogin, ingresarRegistro, realizarRegistro, productosNavbarPremiumSet, realizarLogin} from '../variables/testRepetidosAInvocar';
 
 
 // Validación de rutas públicas sin loguearse
@@ -13,12 +13,20 @@ test.describe('Validación de rutas públicas sin loguear', () => {
     await ingresarRegistro(page);
   });
 
-  test('No logueado - Página de registro Registrarse (/register)', async ({ page }) => {
-    await realizarRegistro(page, variables_registro.nombre, variables_registro.apellido, variables_registro.email, variables_registro.password);
+  test('No logueado - Página de registro Registrarse usuario existente (/register)', async ({ page }) => {
+    await realizarRegistro(page, variables_registro_existente.nombre, variables_registro_existente.apellido, variables_registro_existente.email, variables_registro_existente.password, false);
+  });
+
+  test('No logueado - Página de registro Registrarse usuario nuevo (/register)', async ({ page }) => {
+    await realizarRegistro(page, variables_registro_nuevo.nombre, variables_registro_nuevo.apellido, variables_registro_nuevo.email, variables_registro_nuevo.password, true);
   });
 
   test('No logueado - Página de inicio de sesión (/login)', async ({ page }) => {
     await ingresarLogin(page)
+  });
+
+  test('No logueado - Página de inicio de sesión Loguearse (/login)', async ({ page }) => {
+    await realizarLogin(page, variables_registro.email, variables_registro.password)
   });
 
   // Catalogo
