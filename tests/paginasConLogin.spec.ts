@@ -1,38 +1,43 @@
 import { test, expect } from '@playwright/test';
-import { variables_userComun } from '../variables/variables';
-import {listaProductos} from '../variables/testRepetidosAInvocar'
+import { variables_registro } from '../variables/variables';
+import {inicio, productosNavbar, sitioWip, ingresarLogin, ingresarRegistro, realizarRegistro, productosNavbarPremiumSet} from '../variables/testRepetidosAInvocar';
 
 // Validación de rutas públicas estando logueado
 test.describe('Validación de rutas públicas estando logueado', () => {
-    test.beforeEach(async ({ page }) => {
-      await realizarLogin(page);
-    });
-  
-    test('Logueado - Página de inicio (/)', async ({ page }) => {
-      await validarRuta(page, '/', null); // No requiere validación específica
-    });
-  
-    test('Logueado - Lista de productos Vajilla (/listaProductos/1)', async ({ page }) => {
-      await validarRuta(page, '/listaProductos', 'Productos', 'h1');
-    });
-  
-    test('Logueado - Detalle de producto (/detail)', async ({ page }) => {
-      await validarRuta(page, '/detail', 'Detalle del Producto', 'h1');
-    });
-  
-    test('Logueado - Galería de imágenes (/gallery)', async ({ page }) => {
-      await validarRuta(page, '/gallery', null, '.gallery');
-    });
-  
-    test('Logueado - Página en construcción (/wip)', async ({ page }) => {
-      await page.goto(`${baseUrl}/wip`);
-      await expect(page.locator('img[alt="mantenimiento"]')).toHaveAttribute('src', '/assets/sitioenmantenimiento-DhxBcCgZ.jpg');  
-    });
-  
-    test('Logueado - Página 404 (*)', async ({ page }) => {
-      await page.goto(`${baseUrl}/ruta-inexistente`);
-      await expect(page.locator('span[class="error-code"]')).toContainText('404: NOT_FOUND');
-    });
+  test('No logueado - Página de inicio (/)', async ({ page }) => {
+    await inicio(page);
   });
-  
-  
+
+  // Catalogo
+  test('Logueado - Lista de productos Vajillas (/listaProductos/1)', async ({ page }) => {
+    await productosNavbar(page, "CATÁLOGO", "Vajilla");
+  });
+
+  test('Logueado - Lista de productos Cubiertos (/listaProductos/2)', async ({ page }) => {
+    await productosNavbar(page, "CATÁLOGO", "Cubiertos");
+  });
+
+  test('Logueado - Lista de productos Cristalería (/listaProductos/3)', async ({ page }) => {
+    await productosNavbar(page, "CATÁLOGO", "Cristalería");
+  });
+
+
+  //Tematicas
+  test('Logueado - Tematicas Halloween', async ({ page }) => {
+    await productosNavbar(page, "TEMÁTICAS", "Halloween");
+  });
+
+  test('Logueado - Tematicas Navidad', async ({ page }) => {
+    await productosNavbar(page, "TEMÁTICAS", "Navidad");
+  });
+
+  test('Logueado - Tematicas Acción de Gracias', async ({ page }) => {
+    await productosNavbar(page, "TEMÁTICAS", "Acción de Gracias");
+  });
+
+
+  //Premium Set
+  test('Logueado - Premium Set', async ({ page }) => {
+    await productosNavbarPremiumSet(page, "Premium Set")
+  });
+}); 
