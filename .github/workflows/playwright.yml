@@ -5,42 +5,61 @@ on:
   push:
 
 jobs:
-  test:
+  generate-matrix:
     runs-on: ubuntu-latest
-
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      # 1. Clonar el repositorio
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Configurar Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      # 3. Instalar dependencias
       - name: Install dependencies
         run: npm ci
 
-      # 4. Ejecutar las pruebas de Playwright
-      - name: Run Playwright tests
-        run: npx playwright test --reporter=junit --output test-results
-        continue-on-error: true # Permitir que el flujo continúe si hay fallos
+      - name: Find test files
+        id: set-matrix
+        run: |
+          FILES=$(find tests -name "*.spec.ts")
+          MATRIX=$(echo $FILES | jq -R -s -c 'split("\n") | map(select(length > 0)) | {file: .}')
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
-      # 5. Subir los resultados como un artefacto
+  test:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Playwright test
+        run: |
+          npx playwright test ${{ matrix.file }} --reporter=junit --output test-results
+
       - name: Upload test results
-        if: always() # Siempre subir resultados, incluso si fallaron las pruebas
+        if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: playwright-test-results
+          name: ${{ matrix.file }}-results
           path: test-results
 
-      # 6. Generar anotaciones basadas en los resultados
-      - name: Create annotations from JUnit results
+      - name: Create annotations for test
         if: always()
         uses: mikepenz/action-junit-report@v3
         with:
-          report_paths: 'test-results/*.xml' # Ruta a los reportes generados por Playwright
-          check_name: 'Playwright Test Results'
+          report_paths: 'test-results/*.xml'
+          check_name: 'Playwright Test: ${{ matrix.file }}'
           require_tests: true
