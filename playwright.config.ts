@@ -1,6 +1,4 @@
 import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
-
 
 /**
  * Read environment variables from file.
@@ -15,39 +13,33 @@ import path from 'path';
  */
 export default defineConfig({
   testDir: './tests',
-  /* Ejecuta tests en archivos en paralelo */
+  /* Run tests in files in parallel */
   fullyParallel: true,
-  /* Falla la compilación en CI si accidentalmente dejaste test.only en el código fuente. */
+  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Reintenta en CI solamente */
+  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* No ejecuta tests en paralelo en CI. */
+  /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter a utilizar. Ver https://playwright.dev/docs/test-reporters */
-  //reporter: process.env.CI ? [['github'], ['html']] : 'html',
-  reporter: process.env.CI
-    ? [
-        [path.resolve(__dirname, 'github-annotations-reporter.js')],
-        ['html', { outputFolder: 'playwright-report' }],
-      ]
-    : 'html',
-  /* Configuraciones compartidas para todos los proyectos a continuación. Ver https://playwright.dev/docs/api/class-testoptions. */
+  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  reporter: 'html',
+  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* URL base para usar en acciones como `await page.goto('/')`. */
+    /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
-    /* Recopila traza al reintentar el test fallido. Ver https://playwright.dev/docs/trace-viewer */
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
   },
 
-  /* Configura proyectos para los navegadores principales */
+  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
 
-    /*{
+    {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
@@ -55,9 +47,9 @@ export default defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-    },*/
+    },
 
-    /* Test contra vistas móviles. */
+    /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',
     //   use: { ...devices['Pixel 5'] },
@@ -67,7 +59,7 @@ export default defineConfig({
     //   use: { ...devices['iPhone 12'] },
     // },
 
-    /* Test contra navegadores de marca. */
+    /* Test against branded browsers. */
     // {
     //   name: 'Microsoft Edge',
     //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
@@ -78,7 +70,7 @@ export default defineConfig({
     // },
   ],
 
-  /* Ejecuta tu servidor de desarrollo local antes de iniciar los tests */
+  /* Run your local dev server before starting the tests */
   // webServer: {
   //   command: 'npm run start',
   //   url: 'http://127.0.0.1:3000',
