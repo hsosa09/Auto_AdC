@@ -13,26 +13,26 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
+  /* Ejecuta tests en archivos en paralelo */
   fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  /* Falla la compilación en CI si accidentalmente dejaste test.only en el código fuente. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
+  /* Reintenta en CI solamente */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
+  /* No ejecuta tests en paralelo en CI. */
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  /* Reporter a utilizar. Ver https://playwright.dev/docs/test-reporters */
+  reporter: process.env.CI ? [['github'], ['html']] : 'html',
+  /* Configuraciones compartidas para todos los proyectos a continuación. Ver https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
+    /* URL base para usar en acciones como `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    /* Recopila traza al reintentar el test fallido. Ver https://playwright.dev/docs/trace-viewer */
     trace: 'on',
   },
 
-  /* Configure projects for major browsers */
+  /* Configura proyectos para los navegadores principales */
   projects: [
     {
       name: 'chromium',
@@ -49,7 +49,7 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },*/
 
-    /* Test against mobile viewports. */
+    /* Test contra vistas móviles. */
     // {
     //   name: 'Mobile Chrome',
     //   use: { ...devices['Pixel 5'] },
@@ -59,7 +59,7 @@ export default defineConfig({
     //   use: { ...devices['iPhone 12'] },
     // },
 
-    /* Test against branded browsers. */
+    /* Test contra navegadores de marca. */
     // {
     //   name: 'Microsoft Edge',
     //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
@@ -70,7 +70,7 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
+  /* Ejecuta tu servidor de desarrollo local antes de iniciar los tests */
   // webServer: {
   //   command: 'npm run start',
   //   url: 'http://127.0.0.1:3000',
