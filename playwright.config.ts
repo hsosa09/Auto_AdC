@@ -1,4 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+
 
 /**
  * Read environment variables from file.
@@ -22,7 +24,13 @@ export default defineConfig({
   /* No ejecuta tests en paralelo en CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter a utilizar. Ver https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? [['github'], ['html']] : 'html',
+  //reporter: process.env.CI ? [['github'], ['html']] : 'html',
+  reporter: process.env.CI
+    ? [
+        [path.resolve(__dirname, 'github-annotations-reporter.js')],
+        ['html', { outputFolder: 'playwright-report' }],
+      ]
+    : 'html',
   /* Configuraciones compartidas para todos los proyectos a continuación. Ver https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* URL base para usar en acciones como `await page.goto('/')`. */
