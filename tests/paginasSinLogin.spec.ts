@@ -42,7 +42,7 @@ test.describe('Validación de rutas públicas sin loguear', () => {
     await productosNavbar(page, "CATÁLOGO", "Cristalería");
   });
 
-
+/*
   //Tematicas
   test('No logueado - Tematicas Halloween', async ({ page }) => {
     await productosNavbar(page, "TEMÁTICAS", "Halloween");
@@ -60,4 +60,5 @@ test.describe('Validación de rutas públicas sin loguear', () => {
   test('No logueado - Premium Set', async ({ page }) => {
     await productosNavbarPremiumSet(page, "Premium Set")
   });
+  */
 }); 

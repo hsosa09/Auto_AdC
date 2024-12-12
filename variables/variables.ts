@@ -12,8 +12,8 @@ export const variables_userComun = {
 
 
 export const variables_userAdmin = {
-        email: 'aasa1ad@asd.asd',
-        password: '123456Aa!',
+        email: 'admin@admin.com',
+        password: 'admin123',
     };
 
 export const variables_registro_existente = {

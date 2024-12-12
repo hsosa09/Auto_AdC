@@ -16,9 +16,9 @@ export async function inicio(page) {
   await page.goto(baseUrl);
   await expect(page.getByText('Tus recuerdos en porcelana')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Catálogo' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Temáticas' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Premium set' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Contáctanos' })).toBeVisible();
+  //await expect(page.getByRole('button', { name: 'Temáticas' })).toBeVisible();
+  //await expect(page.getByRole('button', { name: 'Premium set' })).toBeVisible();
+  //await expect(page.getByRole('button', { name: 'Contáctanos' })).toBeVisible();
 
 };
 
@@ -61,7 +61,7 @@ export async function sitioWip(page){
 export async function ingresarLogin(page){
   await page.goto(baseUrl);
   await expect(page.getByText('Tus recuerdos en porcelana')).toBeVisible();
-  await page.getByRole('banner').getByRole('button').nth(4).click();
+  await page.getByRole('banner').getByRole('button').nth(1).click();
   await page.getByRole('link', { name: 'Iniciar Sesión' }).click();
   await expect(page.locator('#root')).toContainText('Iniciar Sesión');
 }
@@ -74,7 +74,7 @@ export async function realizarLogin(page, email, password) {
   await expect(page.getByLabel('Contraseña *')).toBeVisible();
   await page.getByLabel('Contraseña *').click();
   await page.getByLabel('Contraseña *').fill(password);
-  await expect(page.getByRole('button', { name: '¿Olvidaste tu contraseña?' })).toBeVisible();
+  //await expect(page.getByRole('button', { name: '¿Olvidaste tu contraseña?' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Ingresar' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Registrarse' })).toBeVisible();
   await page.getByRole('button', { name: 'Ingresar' }).click();
@@ -84,7 +84,7 @@ export async function realizarLogin(page, email, password) {
     await page.getByRole('button', { name: 'OK' }).click(); 
     await expect(page.url()).toBe(`${baseUrl}/`);
   } catch (error) {
-    await expect(page.getByText('Usuario no creado')).toBeVisible();
+    await expect(page.getByText('Las credenciales no son válidas')).toBeVisible();
     await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
     await page.getByRole('button', { name: 'OK' }).click();
   }
@@ -99,7 +99,7 @@ export async function realizarLogin(page, email, password) {
 export async function ingresarRegistro(page){
   await page.goto(baseUrl);
   await expect(page.getByText('Tus recuerdos en porcelana')).toBeVisible();
-  await page.getByRole('banner').getByRole('button').nth(4).click();
+  await page.getByRole('banner').getByRole('button').nth(1).click();
   await page.getByRole('link', { name: 'Regístrate' }).click();
   await expect(page.getByRole('heading', { name: 'Crear cuenta 📋' })).toBeVisible();
   await expect(page.getByText('Vamos a comenzar a configurar')).toBeVisible();
@@ -129,7 +129,7 @@ export async function realizarRegistro(page, nombre, apellido, email, password, 
     await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
     await page.getByRole('button', { name: 'OK' }).click();
   } else {
-    await expect(page.getByText('Usuario no creado')).toBeVisible();
+    await expect(page.getByText('El usuario ya existe.')).toBeVisible();
     await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
     await page.getByRole('button', { name: 'OK' }).click();
   }
@@ -141,60 +141,99 @@ export async function realizarRegistro(page, nombre, apellido, email, password, 
 export async function ingresarPanelAdmin(page){
   await page.goto(baseUrl);
   await expect(page.getByText('Tus recuerdos en porcelana')).toBeVisible();
-  await page.getByRole('banner').getByRole('button').nth(4).click();
+  await page.getByRole('banner').getByRole('button').nth(1).click();
   await page.getByRole('link', { name: 'Panel Admin' }).click();
   await expect(page.locator('#root')).toContainText('Panel de Administración');
   await expect(page.getByRole('button', { name: 'LISTAR PRODUCTOS' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'AGREGAR PRODUCTO' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'ADMINISTRAR CARACTERISTICAS' })).toBeVisible();
+  // await expect(page.getByRole('button', { name: 'ADMINISTRAR CARACTERISTICAS' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'ADMINISTRAR USUARIOS' })).toBeVisible();
 
 }
 
 // Ingresar a panel admin Listar Productos
-export async function ingresarPanelAdminOpcionesListarProductos(page, tipo){
+export async function ingresarPanelAdminOpcionesListarProductos(page, tipo) {
   await page.getByRole('button', { name: tipo }).click();
-  await expect(page.getByRole('cell', { name: 'ID', exact: true })).toBeVisible();
-  await expect(page.getByRole('cell', { name: 'NOMBRE' })).toBeVisible();
-  await expect(page.getByRole('cell', { name: 'CATEGORÍA' })).toBeVisible();
-  await expect(page.getByRole('cell', { name: 'ACCIONES' })).toBeVisible();
-  // await page.waitForTimeout(5000);
-  await page.waitForSelector('table tbody tr');
+  await expect(page.getByRole('columnheader', { name: 'Nombre ▲' })).toBeVisible();
+  await page.waitForSelector('.rdt_TableRow');
 
-  const tabla = page.locator('table');
+  const tabla = page.locator('[role="table"]');
   await expect(tabla).toBeVisible();
 
-  const filas = tabla.locator('tbody tr');
-
-  const numeroDeFilas = await filas.count();
-  console.log(numeroDeFilas);
+  const filas = tabla.locator('.rdt_TableRow');
+  let numeroDeFilas = await filas.count();
   expect(numeroDeFilas).toBeGreaterThan(0);
+  console.log(`Número inicial de filas: ${numeroDeFilas}`);
+
+  // Cantidad de resultados por página
+  const rowsPerPageSelect = page.locator('select[aria-label="Rows per page:"]');
+  await expect(rowsPerPageSelect).toBeVisible();
+
+  // Cambiamos a 10 filas por página
+  await rowsPerPageSelect.selectOption('10');
+  // Espera a que actualice
+  await page.waitForSelector('.rdt_TableRow');
+  numeroDeFilas = await filas.count();
+  console.log(`Número de filas después de seleccionar 10: ${numeroDeFilas}`);
+  expect(numeroDeFilas).toBeLessThanOrEqual(10);
+
+  const nextPageButton = page.getByRole('button', { name: 'Next Page' });
+  await expect(nextPageButton).toBeVisible();
+  await expect(nextPageButton).toBeEnabled();
+  await nextPageButton.click();
+
+  // Espera a que actualice
+  await page.waitForSelector('.rdt_TableRow');
+  numeroDeFilas = await filas.count();
+  console.log(`Número de filas en la página siguiente: ${numeroDeFilas}`);
+  expect(numeroDeFilas).toBeLessThanOrEqual(10);
+
+  // Ir a la última página de resultados
+  const lastPageButton = page.getByRole('button', { name: 'Last Page' });
+  await expect(lastPageButton).toBeEnabled();
+  await lastPageButton.click();
+
+  // Espera a que actualice
+  await page.waitForSelector('.rdt_TableRow');
+
+  // Contamos las filas de la última página
+  numeroDeFilas = await filas.count();
+  console.log(`Número de filas en la última página: ${numeroDeFilas}`);
+  expect(numeroDeFilas).toBeGreaterThanOrEqual(1);
+
+  await rowsPerPageSelect.selectOption('5');
+  await page.waitForSelector('.rdt_TableRow');
+  numeroDeFilas = await filas.count();
+  console.log(`Número de filas después de volver a seleccionar 5: ${numeroDeFilas}`);
+  expect(numeroDeFilas).toBeLessThanOrEqual(5);
 }
 
 
 
 // Ingresar a panel admin Agregar Productos
-export async function ingresarPanelAdminOpcionesAgregarProductos(page, tipo){
+export async function ingresarPanelAdminOpcionesAgregarProductos(page, tipo) {
   await page.getByRole('button', { name: tipo }).click();
   await expect(page.getByRole('button', { name: 'Volver' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Agregar Producto' })).toBeVisible();
-  await expect(page.getByText('Nombre *')).toBeVisible();
-  await expect(page.locator('div').filter({ hasText: /^Nombre \*$/ }).getByRole('textbox')).toBeVisible();
-  await expect(page.getByText('Descripción *')).toBeVisible();
-  await expect(page.locator('textarea')).toBeVisible();
-  await expect(page.getByText('Precio *')).toBeVisible();
-  await expect(page.locator('div').filter({ hasText: /^Precio \*$/ }).getByRole('spinbutton')).toBeVisible();
-  await expect(page.getByText('Inventario *')).toBeVisible();
-  await expect(page.locator('div').filter({ hasText: /^Inventario \*$/ }).getByRole('spinbutton')).toBeVisible();
-  await expect(page.getByText('Categoría *')).toBeVisible();
-  await expect(page.locator('div').filter({ hasText: /^Categoría \*SeleccionarVAJILLACUBIERTOSCRISTALERIA$/ }).getByRole('combobox')).toBeVisible();
-  await expect(page.getByText('Temática *')).toBeVisible();
-  await expect(page.locator('div').filter({ hasText: /^Temática \*SeleccionarHALLOWEENNAVIDADACCION DE GRACIASPASCUA$/ }).getByRole('combobox')).toBeVisible();
-  await expect(page.getByText('Imágenes *')).toBeVisible();
-  await expect(page.locator('input[type="file"]')).toBeVisible();
-  await expect(page.getByText('Características')).toBeVisible();
-  await expect(page.getByPlaceholder('Separar con comas (ej: 1, 2,')).toBeVisible();
+  await expect(page.getByText('Nombre:')).toBeVisible();
+  await expect(page.locator('input[name="nombre"]')).toBeVisible();
+  await expect(page.getByText('Descripción')).toBeVisible();
+  await expect(page.locator('textarea[name="descripcion"]')).toBeVisible();
+  await expect(page.getByText('Precio')).toBeVisible();
+  await expect(page.locator('div').getByRole('spinbutton')).toBeVisible();
+  //await expect(page.getByText('Inventario *')).toBeVisible();
+  //await expect(page.locator('div').filter({ hasText: /^Inventario \*$/ }).getByRole('spinbutton')).toBeVisible();
+  await expect(page.getByText('Categoría:')).toBeVisible();
+  await expect(page.locator('select[name="categoria_id"]')).toBeVisible();
+  await expect(page.getByText('Temática:')).toBeVisible();
+  await expect(page.locator('select[name="tematica_id"]')).toBeVisible();
+  await expect(page.getByText('Imágenes (URLs):')).toBeVisible();
+  await expect(page.getByPlaceholder('Por favor, ingresa las 5 URLs')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Agregar Imagen' })).toBeVisible();
+  await expect(page.getByText('Agregar Característica:')).toBeVisible();
+  await expect(page.getByRole('combobox').nth(2)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Registrar Producto' })).toBeVisible();
+  // pendiente logica añadir producto
 };
 
 

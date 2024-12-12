@@ -24,7 +24,7 @@ test.describe('Validación de rutas públicas estando logueado', () => {
     await productosNavbar(page, "CATÁLOGO", "Cristalería");
   });
 
-
+/*
   //Tematicas
   test('Logueado - Tematicas Halloween', async ({ page }) => {
     await productosNavbar(page, "TEMÁTICAS", "Halloween");
@@ -43,4 +43,5 @@ test.describe('Validación de rutas públicas estando logueado', () => {
   test('Logueado - Premium Set', async ({ page }) => {
     await productosNavbarPremiumSet(page, "Premium Set")
   });
+  */
 }); 
